@@ -23,7 +23,7 @@ There's also a template library to help you get started faster.
 
 ## Try the App Live
 
-✨ Launch the tool here → [Focus Builder](https://your-username-focus-builder.streamlit.app)  
+✨ Launch the tool here → [Focus Builder](https://kkuvam-focusbuilder.streamlit.app)  
 
 ## How To Run It
 
