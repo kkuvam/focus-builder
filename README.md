@@ -1,33 +1,52 @@
-# ai-productivity-tool-generator
-# AI Productivity Tool Generator
+# 🧠 Focus Builder
 
-This is a simple but powerful AI-based app that helps you turn natural language ideas into working productivity tools like planners, trackers, and dashboards. You just describe what you want, and it generates full Streamlit code instantly.
+**Focus Builder** is an AI-powered productivity assistant that transforms rough ideas into functional planners, dashboards, and trackers — instantly.  
+Built for creators, students, and professionals who want to organize fast and think less.
 
-## What It Does
+> [Launch the App](https://kkuvam-focus-builder.streamlit.app)  
+> [View the Code](https://github.com/kkuvam/focus-builder)
 
-You can write a prompt like “a habit tracker with checkboxes and a progress chart,” and the app will:
-- Understand your description
-- Generate a full working tool using Python + Streamlit
-- Let you preview it instantly
-- Give you the option to download and reuse the code
+---
 
-There's also a template library to help you get started faster.
+## Features
 
-## Built With
+- **Idea to Tool Generator**  
+  Convert natural language ideas into structured productivity tools like to-do lists, planners, goal trackers, etc.
 
-- **Python** – core logic
-- **Streamlit** – for the UI and interactivity
-- **OpenAI API** – to generate ideas and code
-- **Pandas** and **Plotly** – for working with data and charts
+- **Powered by GPT**  
+  Uses OpenAI’s GPT model to understand context and generate relevant, smart tools.
+
+- **Instant Output**  
+  Generate working formats in seconds — ready to use or export.
+
+- **Minimal Interface**  
+  Fast, clean UI using Streamlit — no learning curve.
 
 
-## Try the App Live
+---
 
-✨ Launch the tool here → [Focus Builder](https://kkuvam-focusbuilder.streamlit.app)  
+## Tech Stack
 
-## How To Run It
+- **Frontend**: Streamlit  
+- **AI Engine**: OpenAI GPT via `st.secrets`  
+- **Language**: Python  
+- **Hosting**: Streamlit Community Cloud
 
-Clone the repo:
-```bash
-git clone https://github.com/your-username/ai-productivity-tool-generator.git
-cd ai-productivity-tool-generator
+---
+
+## How to Use
+
+1. Visit the live app: [https://kkuvam-focus-builder.streamlit.app](https://kkuvam-focus-builder.streamlit.app)  
+2. Input a rough idea like:  
+   _"I want a weekly fitness tracker for 3 goals"_  
+3. Instantly get a structured tool with headings, checkboxes, or tables  
+4. Copy or refine — more formats coming soon
+
+---
+
+## Environment Variables
+
+To run locally, create a `.streamlit/secrets.toml` file:
+
+```toml
+OPENAI_API_KEY = "your-api-key"
