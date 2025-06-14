@@ -22,12 +22,12 @@ if 'tool_executor' not in st.session_state:
 
 def main():
     st.set_page_config(
-        page_title="AI Productivity Tool Generator",
+        page_title="Focus Builder",
         page_icon="🛠️",
         layout="wide"
     )
     
-    st.title("🛠️ AI Productivity Tool Generator")
+    st.title("🛠️ Focus Builder")
     st.markdown("Transform your natural language ideas into functional productivity tools!")
     
     # Sidebar for navigation and templates
