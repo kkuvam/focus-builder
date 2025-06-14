@@ -20,9 +20,14 @@ There's also a template library to help you get started faster.
 - **OpenAI API** – to generate ideas and code
 - **Pandas** and **Plotly** – for working with data and charts
 
+
+## Try the App Live
+
+✨ Launch the tool here → [Focus Builder](https://your-username-focus-builder.streamlit.app)  
+
 ## How To Run It
 
-1. Clone the repo:
+Clone the repo:
 ```bash
 git clone https://github.com/your-username/ai-productivity-tool-generator.git
 cd ai-productivity-tool-generator
