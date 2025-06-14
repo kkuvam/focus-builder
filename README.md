@@ -3,7 +3,7 @@
 **Focus Builder** is an AI-powered productivity assistant that transforms rough ideas into functional planners, dashboards, and trackers — instantly.  
 Built for creators, students, and professionals who want to organize fast and think less.
 
-> [Launch the App](https://kkuvam-focus-builder.streamlit.app)  
+> [Launch the App](https://focus-builder.streamlit.app)  
 > [View the Code](https://github.com/kkuvam/focus-builder)
 
 ---
