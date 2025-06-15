@@ -4,7 +4,7 @@ import streamlit as st
 
 class AIGenerator:
     def __init__(self):
-        self.api_url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
+        self.api_url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1"
         self.headers = {
             "Authorization": f"Bearer {st.secrets['HF_API_KEY']}",
             "Content-Type": "application/json"
