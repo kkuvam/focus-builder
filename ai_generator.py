@@ -1,42 +1,42 @@
 import json
 import requests
 import streamlit as st
-import re
 
 class AIGenerator:
     def __init__(self):
-        self.api_url = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
-        self.headers = {
-            "Authorization": f"Bearer {st.secrets['HF_API_KEY']}",
-            "Content-Type": "application/json"
+        self.api_url = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
+        self.headers = {"Authorization": f"Bearer {st.secrets.get('HF_TOKEN', '')}"}
+
+    def query_huggingface(self, prompt):
+        payload = {
+            "inputs": prompt,
+            "parameters": {"max_new_tokens": 1024, "return_full_text": False}
         }
+        response = requests.post(self.api_url, headers=self.headers, json=payload)
+        if response.status_code != 200:
+            raise Exception(f"HuggingFace API error {response.status_code}: {response.text}")
+        try:
+            return response.json()[0]['generated_text']
+        except Exception:
+            raise Exception("Invalid response format from Hugging Face")
 
     def generate_tool_specification(self, user_description):
         prompt = (
-            "<|system|>\nYou are an expert in creating productivity tools for Streamlit.\n"
-            "Respond ONLY with valid JSON.\n"
-            "<|user|>\n"
-            f"Create a specification for this idea: {user_description}\n"
-            "<|assistant|>"
+            f"You are a productivity app planner. Convert the following user idea into a JSON object with keys: 'name', 'description', 'features', 'inputs', 'outputs', and 'visualizations'."
+            f"\n\nUser Idea: {user_description}\n\nJSON:"
         )
-        payload = {"inputs": prompt}
-
-        res = requests.post(self.api_url, headers=self.headers, json=payload)
-        if res.status_code != 200:
-            st.error(f"❌ API Error {res.status_code}: {res.text}")
-            return None
-
-        text = res.json()[0].get("generated_text", "")
-        start = text.find("{")
-        end = text.rfind("}") + 1
-        json_str = text[start:end]
-
-        json_str = re.sub(r",\s*}", "}", json_str)
-        json_str = re.sub(r",\s*]", "]", json_str)
-        json_str = re.sub(r"[“”‘’]", '"', json_str)
-
+        result = self.query_huggingface(prompt)
         try:
-            return json.loads(json_str)
-        except Exception as e:
-            st.error(f"❌ JSON parse failed: {e}")
-            return None
+            json_part = result[result.find('{'):]  # Cut to start of JSON
+            return json.loads(json_part)
+        except Exception:
+            raise Exception("Failed to parse tool specification JSON")
+
+    def generate_streamlit_code(self, spec):
+        prompt = (
+            f"Write a working Streamlit Python script using only built-in modules and the following libraries: pandas, plotly, datetime."
+            f" Build a dashboard/tool with the following specification:\n{json.dumps(spec, indent=2)}\n\nStart the code with 'import streamlit'."
+        )
+        result = self.query_huggingface(prompt)
+        code = result[result.find("import streamlit"):]
+        return code
