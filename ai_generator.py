@@ -1,3 +1,8 @@
+import streamlit as st
+import requests
+import json
+
+
 # ---- AI Generator using Hugging Face with free model ----
 class AIGenerator:
     def __init__(self):
