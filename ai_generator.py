@@ -1,7 +1,7 @@
 # ---- AI Generator using Hugging Face with free model ----
 class AIGenerator:
     def __init__(self):
-        self.api_url = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
+        self.api_url = "https://router.huggingface.co/hf-inference/models/HuggingFaceH4/zephyr-7b-beta/v1/chat/completions"
         self.headers = {"Authorization": f"Bearer {st.secrets.get('HF_TOKEN', '')}"}
 
     def query_huggingface(self, prompt):
