@@ -10,62 +10,63 @@ class AIGenerator:
         }
 
     def generate_tool_specification(self, user_description):
-        """Generate a structured specification for the productivity tool"""
-        prompt = f"""
-        [INST] You are a productivity app designer.
-        Turn the following user request into a detailed tool spec in JSON:
-        "{user_description}"
-        Return a JSON with: name, category, description, features (list),
-        data_structure (fields), visualizations, interactions, and layout. [/INST]
-        """
-        return self.query_model(prompt, expect_json=True)
+    """Generate a structured specification for the productivity tool"""
 
-    def generate_streamlit_code(self, tool_spec):
-        """Generate Streamlit code based on the tool specification"""
-        prompt = f"""
-        [INST] You are a skilled Python and Streamlit developer.
-        Write full Streamlit code for this tool spec (no mock data, use session_state):
-        {tool_spec}
-        [/INST]
-        """
-        return self.query_model(prompt)
+    system_prompt = """You are an expert in creating productivity tools and Streamlit applications.
+    Analyze the user's natural language description and create a detailed specification for a Streamlit-based productivity tool.
+    
+    Respond with a JSON object containing:
+    {
+        "name": "Tool name",
+        "category": "planner|dashboard|tracker|other",
+        "description": "Detailed description",
+        "features": ["list", "of", "key", "features"],
+        "data_structure": {
+            "fields": [
+                {"name": "field_name", "type": "string|number|date|boolean", "description": "field description"}
+            ]
+        },
+        "visualizations": [
+            {"type": "chart|table|metric|progress", "description": "what it shows"}
+        ],
+        "interactions": [
+            "list of user interactions like add, edit, delete, filter, etc."
+        ],
+        "layout": {
+            "columns": 1-3,
+            "sections": ["section1", "section2"]
+        }
+    }"""
 
-    def improve_tool(self, tool_code, improvement_request):
-        """Improve the generated code using user feedback"""
-        prompt = f"""
-        [INST] Improve this Streamlit app code based on the user's request.
-
-        REQUEST: {improvement_request}
-
-        CODE: {tool_code}
-        [/INST]
-        """
-        return self.query_model(prompt)
-
-    def query_model(self, prompt, expect_json=False):
-        """Calls Hugging Face inference endpoint"""
-        payload = {
-            "inputs": prompt,
-            "parameters": {
-                "temperature": 0.7,
-                "max_new_tokens": 800
-            }
+    try:
+        headers = {
+            "Authorization": f"Bearer {os.getenv('HF_API_KEY')}",
+            "Content-Type": "application/json"
         }
 
-        try:
-            res = requests.post(self.api_url, headers=self.headers, json=payload)
-            result = res.json()
-            if isinstance(result, list) and "generated_text" in result[0]:
-                output = result[0]["generated_text"]
-                if expect_json:
-                    try:
-                        # attempt to extract valid JSON
-                        json_start = output.find("{")
-                        json_end = output.rfind("}") + 1
-                        return eval(output[json_start:json_end])  # safer alternative is json.loads
-                    except Exception:
-                        return {"error": "Could not parse JSON."}
-                return output.strip()
-            return f"❌ Error: {result}"
-        except Exception as e:
-            return f"❌ Request failed: {str(e)}"
+        payload = {
+            "inputs": f"System: {system_prompt}\n\nUser: Create a specification for this productivity tool: {user_description}"
+        }
+
+        response = requests.post(
+            "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1",
+            headers=headers,
+            json=payload
+        )
+
+        if response.status_code != 200:
+            st.error(f"❌ Request failed: {response.status_code} - {response.text}")
+            return None
+
+        # Parse only the first JSON-looking block from response
+        generated_text = response.json()[0]["generated_text"]
+        json_start = generated_text.find("{")
+        json_end = generated_text.rfind("}") + 1
+
+        json_str = generated_text[json_start:json_end]
+
+        return json.loads(json_str)
+
+    except Exception as e:
+        st.error(f"❌ Error generating tool specification: {str(e)}")
+        return None
