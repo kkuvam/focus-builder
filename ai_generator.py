@@ -4,7 +4,7 @@ import streamlit as st
 
 class AIGenerator:
     def __init__(self):
-        self.api_url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1"
+        self.api_url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
         self.headers = {
             "Authorization": f"Bearer {st.secrets['HF_API_KEY']}",
             "Content-Type": "application/json"
@@ -57,7 +57,6 @@ class AIGenerator:
             generated_text = response.json()[0]["generated_text"]
             json_start = generated_text.find("{")
             json_end = generated_text.rfind("}") + 1
-
             json_str = generated_text[json_start:json_end]
 
             return json.loads(json_str)
