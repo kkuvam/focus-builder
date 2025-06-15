@@ -9,17 +9,24 @@ class AIGenerator:
         self.api_url = "https://router.huggingface.co/hf-inference/models/HuggingFaceH4/zephyr-7b-beta/v1/chat/completions"
         self.headers = {"Authorization": f"Bearer {st.secrets.get('HF_TOKEN', '')}"}
 
-    def query_huggingface(self, prompt):
-        payload = {
-            "inputs": prompt,
-            "parameters": {
-                "max_new_tokens": 1024,
-                "temperature": 0.7,
-                "do_sample": True,
-                "return_full_text": False
-            }
-        }
-        response = requests.post(self.api_url, headers=self.headers, json=payload)
+   def query_huggingface(self, prompt):
+    payload = {
+        "messages": [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        "parameters": {"max_new_tokens": 1024}
+    }
+    response = requests.post(self.api_url, headers=self.headers, json=payload)
+
+    if response.status_code != 200:
+        raise Exception(f"HuggingFace API error {response.status_code}: {response.text}")
+    
+    try:
+        return response.json()['choices'][0]['message']['content']
+    except Exception:
+        raise Exception("Invalid response format from Hugging Face")
+
         if response.status_code != 200:
             raise Exception(f"HuggingFace API error {response.status_code}: {response.text}")
         try:
