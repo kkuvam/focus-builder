@@ -1,4 +1,12 @@
 import streamlit as st
+
+# Set page config first, before any other Streamlit commands
+st.set_page_config(
+    page_title="AI Productivity Tool Generator",
+    page_icon="🛠️",
+    layout="wide"
+)
+
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -9,7 +17,6 @@ from templates import get_template_library, get_template_code
 from tool_executor import ToolExecutor
 from utils import sanitize_input, validate_generated_code
 
-    
 # Initialize session state
 if 'generated_tools' not in st.session_state:
     st.session_state.generated_tools = {}
@@ -21,13 +28,8 @@ if 'tool_executor' not in st.session_state:
     st.session_state.tool_executor = ToolExecutor()
 
 def main():
-    st.set_page_config(
-        page_title="Focus Builder",
-        page_icon="🛠️",
-        layout="wide"
-    )
     
-    st.title("🛠️ Focus Builder")
+    st.title("🛠️ AI Productivity Tool Generator")
     st.markdown("Transform your natural language ideas into functional productivity tools!")
     
     # Sidebar for navigation and templates
@@ -232,7 +234,8 @@ def template_library_page():
             with col1:
                 if st.button(f"Use Template: {template_name}", key=f"use_{template_name}"):
                     st.session_state.template_input = template_data['description']
-                    st.switch_page("Generate New Tool")
+                    st.success(f"Template '{template_name}' loaded! Go to 'Generate New Tool' to use it.")
+                    st.rerun()
             
             with col2:
                 if st.button(f"View Code: {template_name}", key=f"view_{template_name}"):
